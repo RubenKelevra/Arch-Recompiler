@@ -224,6 +224,8 @@ for e in "$(pacman -Qen)"; do
   fi
 done
 
+unset tmp1 tmp2 e
+
 echo "Compiling depency-packages..."
 # check if element is still installed (for long worklists)
 
