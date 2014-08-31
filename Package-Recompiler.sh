@@ -130,3 +130,24 @@ touch "$db_folder/$igno_db.lock" >/dev/null 2>&1
 if test $? -ne 0; then
   echo "ERROR: Can't lock ignore-packages database.";exit 1
 fi
+
+
+echo "Unlocking databases..."
+[ -f "$db_folder/$deps_db.lock" ] && (
+  rm "$db_folder/$deps_db.lock" >/dev/null 2>&1
+  if test $? -ne 0; then
+    echo "ERROR: Can't unlock depency-packages database.";exit 1
+  fi
+)
+[ -f "$db_folder/$expl_db.lock" ] && (
+  rm "$db_folder/$expl_db.lock" >/dev/null 2>&1
+  if test $? -ne 0; then
+    echo "ERROR: Can't unlock explicit-packages database.";exit 1
+  fi
+)
+[ -f "$db_folder/$igno_db.lock" ] && (
+  rm "$db_folder/$igno_db.lock" >/dev/null 2>&1
+  if test $? -ne 0; then
+    echo "ERROR: Can't unlock ignore-packages database.";exit 1
+  fi
+)
