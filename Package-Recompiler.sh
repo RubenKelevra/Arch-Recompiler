@@ -44,7 +44,7 @@ if [ ! -d "$db_folder" ]; then
     if test $? -ne 0; then
       echo "chown failed.";exit 1
     fi
-    sudo chmod 600 "$db_folder"
+    sudo chmod 700 "$db_folder"
     if test $? -ne 0; then
       echo "chmod failed.";exit 1
     fi
@@ -88,7 +88,11 @@ if [ $fix_filerights ]; then
   sudo chmod 600 -R "$db_folder"
   if test $? -ne 0; then
     echo "chmod failed.";exit 1
-  fi 
+  fi
+  sudo chmod 700 "$db_folder"
+  if test $? -ne 0; then
+    echo "chmod failed.";exit 1
+  fi
 fi
 unset fix_filerights
 
