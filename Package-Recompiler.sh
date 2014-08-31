@@ -1,4 +1,5 @@
 
+trap 'echo Got SIGINT, ignoring.' 2
 
 # Recompile Packages Automatically
 
@@ -18,6 +19,8 @@ linux-lts-headers'
 declare -A deps_indb
 declare -A expl_indb
 igno_indb=()
+deps_worklist=()
+expl_worklist=()
 
 #Flags
 create_deps_db=0
@@ -93,14 +96,14 @@ if [ $create_deps_db -o $create_expl_db -o $create_igno_db ]; then
   echo "Creating databases ..."
   if [ $create_deps_db ]; then
     echo "  Depency-packages database..."
-    echo "" > "$db_folder/$deps_db" 2>&1 #pacman -Qdn
+    echo "" > "$db_folder/$deps_db" 2>&1
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
   fi
   if [ $create_expl_db ]; then
     echo "  Explicit-packages database..."
-    echo "" > "$db_folder/$expl_db" 2>&1 #pacman -Qen
+    echo "" > "$db_folder/$expl_db" 2>&1
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
@@ -194,8 +197,34 @@ for e in "${expl_indb[@]}"; do
 done
 
 echo "Calculating worklist..."
-#if [[ ${array[$hash-element]} ]]; then
-echo "Compiling packages..."
+tmp1=""
+tmp2=""
+echo "  Depency-packages..."
+for e in "$(pacman -Qdn)"; do
+  tmp1=$(echo $e | cut -d' ' -f1)
+  tmp2=$(echo $e | cut -d' ' -f2)
+  if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
+    if [ "${deps_indb[$tmp1]}" = "$tmp2" ]; then
+      continue
+    fi
+    deps_worklist+=("$tmp1")
+  fi
+done
+tmp1=""
+tmp2=""
+echo "  Explicit-packages..."
+for e in "$(pacman -Qen)"; do
+  tmp1=$(echo $e | cut -d' ' -f1)
+  tmp2=$(echo $e | cut -d' ' -f2)
+  if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
+  if [ "${expl_indb[$tmp1]}" = "$tmp2" ]; then
+      continue
+    fi
+    expl_worklist+=("$tmp1")
+  fi
+done
+
+echo "Compiling depency-packages..."
 # check if element is still installed (for long worklists)
 
 # grep -v "$packagename " + add compiled or not compiled package to file
