@@ -88,14 +88,14 @@ if [ $create_deps_db -o $create_expl_db -o $create_igno_db ]; then
   echo "Creating databases ..."
   if [ $create_deps_db ]; then
     echo "  Depency-packages database..."
-    pacman -Qd > "$db_folder/$deps_db" 2>&1
+    pacman -Qdn > "$db_folder/$deps_db" 2>&1
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
   fi
   if [ $create_expl_db ]; then
     echo "  Explicit-packages database..."
-    pacman -Qe > "$db_folder/$expl_db" 2>&1
+    pacman -Qen > "$db_folder/$expl_db" 2>&1
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
