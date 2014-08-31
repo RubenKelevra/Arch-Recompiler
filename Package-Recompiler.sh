@@ -270,7 +270,7 @@ for e in "${deps_worklist[@]}"; do
     continue
   fi
   grep -v "^$e " "$db_folder/$deps_db" > "$db_folder/$deps_db.bak" &&
-  echo "$e $tmp1" > "$db_folder/$deps_db.bak" &&
+  echo "$e $tmp1" >> "$db_folder/$deps_db.bak" &&
   mv "$db_folder/$deps_db.bak" "$db_folder/$deps_db"
   if test $? -ne 0; then
     echo "ERROR: Database-File action failed."; exit 1
@@ -308,7 +308,7 @@ for e in "${expl_worklist[@]}"; do
     continue
   fi
   grep -v "^$e " "$db_folder/$expl_db" > "$db_folder/$expl_db.bak" &&
-  echo "$e $tmp1" > "$db_folder/$expl_db.bak" &&
+  echo "$e $tmp1" >> "$db_folder/$expl_db.bak" &&
   mv "$db_folder/$expl_db.bak" "$db_folder/$expl_db"
   if test $? -ne 0; then
     echo "ERROR: Database-File action failed."; exit 1
