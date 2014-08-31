@@ -234,11 +234,22 @@ unset tmp1 tmp2 e
 
 echo "Compiling packages..."
 tmp1=""
+tmp2=""
 echo "  Depency-Packages"
 for e in "${deps_worklist[@]}"; do
-  echo "   Package: $e"
-  yaourt -Qidn "$e" >/dev/null 2>&1
-  if test $? -ne 0; then
+  echo "   Package: '$e'"
+  yaourt -Sy > /dev/null
+  tmp1=$(yaourt -Qidn "$e" | grep "^Version" | cut -d':' -f2 | tr -d '[:space:]')
+  tmp2=$(yaourt -Si   "$e" | grep "^Version" | cut -d':' -f2 | tr -d '[:space:]')
+  if [ ! -z "$tmp1" ]; then
+    if [ -z "$tmp2" ]; then
+      echo "ERROR: we seem to have no Internet-connection..."; exit 1
+    fi
+    if [ "$tmp1" -ne "$tmp2" ]; then
+      echo "local / remote version missmatch, can't recompile."
+      continue
+    fi
+  else
     echo "Warning: Package '$e' has been uninstalled."
     continue
   fi
@@ -247,8 +258,8 @@ for e in "${deps_worklist[@]}"; do
   if test $? -ne 0; then
     echo "Warning: Package '$e' could not be compiled, maybe you want to add it to ignore list"
   fi
-  tmp1=$(yaourt -Qidn "$e" | grep "^Version" | tr -d '[:space:]')
-  if [ $? -ne 0 -o -z "$tmp1" ]; then
+  tmp1=$(yaourt -Qidn "$e" | grep "^Version" | cut -d':' -f2 | tr -d '[:space:]')
+  if [ -z "$tmp1" ]; then
     echo "Warning: Can't fetch version of '$e', ignoring."
     continue
   fi
@@ -259,13 +270,24 @@ for e in "${deps_worklist[@]}"; do
     echo "ERROR: Database-File action failed."; exit 1
   fi
 done
+unset deps_worklist
 
 tmp1=""
 echo "  Explicit-Packages"
 for e in "${expl_worklist[@]}"; do
   echo "   Package: $e"
-  yaourt -Qien "$e" >/dev/null 2>&1
-  if test $? -ne 0; then
+  yaourt -Sy > /dev/null
+  tmp1=$(yaourt -Qien "$e" | grep "^Version" | cut -d':' -f2 | tr -d '[:space:]')
+  tmp2=$(yaourt -Si   "$e" | grep "^Version" | cut -d':' -f2 | tr -d '[:space:]')
+  if [ ! -z "$tmp1" ]; then
+    if [ -z "$tmp2" ]; then
+      echo "ERROR: we seem to have no Internet-connection..."; exit 1
+    fi
+    if [ "$tmp1" -ne "$tmp2" ]; then
+      echo "Warning: local / remote version missmatch, can't recompile."
+      continue
+    fi
+  else
     echo "Warning: Package '$e' has been uninstalled."
     continue
   fi
@@ -274,7 +296,7 @@ for e in "${expl_worklist[@]}"; do
   if test $? -ne 0; then
     echo "Warning: Package '$e' could not be compiled, maybe you want to add it to ignore list"
   fi
-  tmp1=$(yaourt -Qien "$e" | grep "^Version" | tr -d '[:space:]')
+  tmp1=$(yaourt -Qien "$e" | grep "^Version" | cut -d':' -f2 | tr -d '[:space:]')
   if [ $? -ne 0 -o -z "$tmp1" ]; then
     echo "Warning: Can't fetch version of '$e', ignoring."
     continue
@@ -287,7 +309,7 @@ for e in "${expl_worklist[@]}"; do
   fi
 done
 
-unset tmp1
+unset tmp1 tmp2 expl_worklist
 
 echo "Unlocking databases..."
 [ -f "$db_folder/$deps_db.lock" ] && (
