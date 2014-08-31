@@ -1,6 +1,6 @@
 
 
-# Recompile Packages Automaticlly
+# Recompile Packages Automatically
 
 
 
