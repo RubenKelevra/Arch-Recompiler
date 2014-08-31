@@ -226,12 +226,62 @@ done
 
 unset tmp1 tmp2 e
 
-echo "Compiling depency-packages..."
+echo "Compiling packages..."
+tmp1=""
+echo "  Depency-Packages"
+for e in "${deps_worklist[@]}"; do
+  echo "   Package: $e"
+  yaourt -Qidn "$e" >/dev/null 2>&1
+  if test $? -ne 0; then
+    echo "Warning: Package '$e' has been uninstalled."
+    continue
+  fi
+  
+  yaourt -Sb $e --asdeps --noconfirm > /dev/null 2>&1
+  if test $? -ne 0; then
+    echo "Warning: Package '$e' could not be compiled, maybe you want to add it to ignore list"
+  fi
+  tmp1=$(yaourt -Qidn "$e" | grep "^Version" | tr -d '[:space:]')
+  if [ $? -ne 0 -o -z "$tmp1" ]; then
+    echo "Warning: Can't fetch version of '$e', ignoring."
+    continue
+  fi
+  grep -v "^$e " "$db_folder/$deps_db" > "$db_folder/$deps_db.bak" &&
+  echo "$e $tmp1" > "$db_folder/$deps_db.bak" &&
+  mv "$db_folder/$deps_db.bak" "$db_folder/$deps_db"
+  if test $? -ne 0; then
+    echo "ERROR: Database-File action failed."; exit 1
+  fi
+done
 
-# check if element is still installed (for long worklists)
+tmp1=""
+echo "  Explicit-Packages"
+for e in "${expl_worklist[@]}"; do
+  echo "   Package: $e"
+  yaourt -Qien "$e" >/dev/null 2>&1
+  if test $? -ne 0; then
+    echo "Warning: Package '$e' has been uninstalled."
+    continue
+  fi
+  
+  yaourt -Sb $e --asexplicit --noconfirm > /dev/null 2>&1
+  if test $? -ne 0; then
+    echo "Warning: Package '$e' could not be compiled, maybe you want to add it to ignore list"
+  fi
+  tmp1=$(yaourt -Qien "$e" | grep "^Version" | tr -d '[:space:]')
+  if [ $? -ne 0 -o -z "$tmp1" ]; then
+    echo "Warning: Can't fetch version of '$e', ignoring."
+    continue
+  fi
+  grep -v "^$e " "$db_folder/$expl_db" > "$db_folder/$expl_db.bak" &&
+  echo "$e $tmp1" > "$db_folder/$expl_db.bak" &&
+  mv "$db_folder/$expl_db.bak" "$db_folder/$expl_db"
+  if test $? -ne 0; then
+    echo "ERROR: Database-File action failed."; exit 1
+  fi
+done
 
-# grep -v "$packagename " + add compiled or not compiled package to file
-
+unset tmp1
 
 echo "Unlocking databases..."
 [ -f "$db_folder/$deps_db.lock" ] && (
