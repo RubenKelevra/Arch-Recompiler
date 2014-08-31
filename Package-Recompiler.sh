@@ -200,7 +200,7 @@ echo "Calculating worklist..."
 tmp1=""
 tmp2=""
 echo "  Depency-packages..."
-for e in "$(pacman -Qdn)"; do
+for e in "$(yaourt -Qdn)"; do
   tmp1=$(echo $e | cut -d' ' -f1)
   tmp2=$(echo $e | cut -d' ' -f2)
   if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
@@ -213,7 +213,7 @@ done
 tmp1=""
 tmp2=""
 echo "  Explicit-packages..."
-for e in "$(pacman -Qen)"; do
+for e in "$(yaourt -Qen)"; do
   tmp1=$(echo $e | cut -d' ' -f1)
   tmp2=$(echo $e | cut -d' ' -f2)
   if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
@@ -227,6 +227,7 @@ done
 unset tmp1 tmp2 e
 
 echo "Compiling depency-packages..."
+
 # check if element is still installed (for long worklists)
 
 # grep -v "$packagename " + add compiled or not compiled package to file
