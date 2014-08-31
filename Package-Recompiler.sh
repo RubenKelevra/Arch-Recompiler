@@ -207,6 +207,9 @@ for e in "$(yaourt -Qdn)"; do
     if [ "${deps_indb[$tmp1]}" = "$tmp2" ]; then
       continue
     fi
+    if [ "$tmp1" in "${igno_indb[@]}" ]; then
+      continue
+    fi
     deps_worklist+=("$tmp1")
   fi
 done
@@ -218,6 +221,9 @@ for e in "$(yaourt -Qen)"; do
   tmp2=$(echo $e | cut -d' ' -f2)
   if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
   if [ "${expl_indb[$tmp1]}" = "$tmp2" ]; then
+      continue
+    fi
+    if [ "$tmp1" in "${igno_indb[@]}" ]; then
       continue
     fi
     expl_worklist+=("$tmp1")
