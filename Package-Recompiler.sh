@@ -93,14 +93,14 @@ if [ $create_deps_db -o $create_expl_db -o $create_igno_db ]; then
   echo "Creating databases ..."
   if [ $create_deps_db ]; then
     echo "  Depency-packages database..."
-    pacman -Qdn > "$db_folder/$deps_db" 2>&1
+    echo "" > "$db_folder/$deps_db" 2>&1 #pacman -Qdn
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
   fi
   if [ $create_expl_db ]; then
     echo "  Explicit-packages database..."
-    pacman -Qen > "$db_folder/$expl_db" 2>&1
+    echo "" > "$db_folder/$expl_db" 2>&1 #pacman -Qen
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
@@ -131,6 +131,31 @@ if test $? -ne 0; then
   echo "ERROR: Can't lock ignore-packages database.";exit 1
 fi
 
+echo "Loading databases..."
+
+tmp1=""
+tmp2=""
+echo "  Depency-packages database..."
+while read e; do
+  tmp1=$(echo $e | cut -d' ' -f1)
+  tmp2=$(echo $e | cut -d' ' -f2)
+  if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
+    deps_indb["$tmp1"]="$tmp2"
+  fi
+done <"$db_folder/$deps_db"
+
+tmp1=""
+tmp2=""
+echo "  Explicit-packages database..."
+while read e; do
+  tmp1=$(echo $e | cut -d' ' -f1)
+  tmp2=$(echo $e | cut -d' ' -f2)
+  if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
+    expl_indb["$tmp1"]="$tmp2"
+  fi
+done <"$db_folder/$expl_db"
+
+unset tmp1 tmp2 e
 
 echo "Unlocking databases..."
 [ -f "$db_folder/$deps_db.lock" ] && (
