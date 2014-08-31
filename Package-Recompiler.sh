@@ -211,7 +211,7 @@ for e in "$(yaourt -Qdn)"; do
     if [ "${deps_indb[$tmp1]}" = "$tmp2" ]; then
       continue
     fi
-    if [ "$tmp1" in "${igno_indb[@]}" ]; then
+    if [[ " ${igno_indb[@]} " =~ " ${tmp1} " ]]; then
       continue
     fi
     deps_worklist+=("$tmp1")
@@ -227,7 +227,7 @@ for e in "$(yaourt -Qen)"; do
   if [ "${expl_indb[$tmp1]}" = "$tmp2" ]; then
       continue
     fi
-    if [ "$tmp1" in "${igno_indb[@]}" ]; then
+    if [[ " ${igno_indb[@]} " =~ " ${tmp1} " ]]; then
       continue
     fi
     expl_worklist+=("$tmp1")
