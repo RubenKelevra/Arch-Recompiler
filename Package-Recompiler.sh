@@ -113,3 +113,20 @@ if [ $create_deps_db -o $create_expl_db -o $create_igno_db ]; then
     fi
   fi
 fi
+
+echo "Locking databases..."
+[ -f "$db_folder/$deps_db.lock" ] && (echo "ERROR: Depency-packages database locked.";exit 1)
+touch "$db_folder/$deps_db.lock" >/dev/null 2>&1
+if test $? -ne 0; then
+  echo "ERROR: Can't lock depency-packages database.";exit 1
+fi
+[ -f "$db_folder/$expl_db.lock" ] && (echo "ERROR: Explicit-packages database locked.";exit 1)
+touch "$db_folder/$expl_db.lock" >/dev/null 2>&1
+if test $? -ne 0; then
+  echo "ERROR: Can't lock explicit-packages database.";exit 1
+fi
+[ -f "$db_folder/$igno_db.lock" ] && (echo "ERROR: Ignore-packages database locked.";exit 1)
+touch "$db_folder/$igno_db.lock" >/dev/null 2>&1
+if test $? -ne 0; then
+  echo "ERROR: Can't lock ignore-packages database.";exit 1
+fi
