@@ -287,7 +287,7 @@ for e in "${expl_worklist[@]}"; do
     if [ -z "$tmp2" ]; then
       echo "ERROR: we seem to have no Internet-connection..."; exit 1
     fi
-    if [ "$tmp1" -ne "$tmp2" ]; then
+    if [ "$tmp1" == "$tmp2" ]; then
       echo "Warning: local / remote version missmatch, can't recompile."
       continue
     fi
