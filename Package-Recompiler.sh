@@ -169,7 +169,7 @@ unset e
 echo "Cleaning database for uninstalled packages..."
 echo "  Depency-packages database..."
 for e in "${deps_indb[@]}"; do
-  yaourt -Qid "$e" >/dev/null 2>&1
+  yaourt -Qidn "$e" >/dev/null 2>&1
   if test $? -ne 0; then
     echo "Delete $e from database, its no longer installed (as depency)."
     unset -v deps_indb[$e]
@@ -182,7 +182,7 @@ done
 
 echo "  Explicit-packages database..."
 for e in "${expl_indb[@]}"; do
-  yaourt -Qie "$e" >/dev/null 2>&1
+  yaourt -Qien "$e" >/dev/null 2>&1
   if test $? -ne 0; then
     echo "Delete $e from database, its no longer (explicit) installed."
     unset -v expl_indb[$e]
