@@ -155,7 +155,26 @@ while read e; do
   fi
 done <"$db_folder/$expl_db"
 
-unset tmp1 tmp2 e
+unset tmp1 tmp2
+
+echo "  Ignore-packages database..."
+while read e; do
+  if [ ! -z "$e" ]; then
+    igno_indb+=("$tmp2")
+  fi
+done <"$db_folder/$igno_db"
+
+unset e
+
+echo "Cleaning database for uninstalled packages..."
+
+echo "Calculating worklist..."
+
+echo "Compiling packages..."
+# check if element is still installed (for long worklists)
+
+# grep -v "$packagename " + add compiled or not compiled package to file
+
 
 echo "Unlocking databases..."
 [ -f "$db_folder/$deps_db.lock" ] && (
