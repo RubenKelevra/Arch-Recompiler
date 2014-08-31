@@ -14,6 +14,11 @@ linux-lts
 linux-headers
 linux-lts-headers'
 
+#In-Memory Databases
+declare -A deps_indb
+declare -A expl_indb
+igno_indb=()
+
 #Flags
 create_deps_db=0
 create_expl_db=0
