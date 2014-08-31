@@ -167,7 +167,7 @@ unset tmp1 tmp2
 echo "  Ignore-packages database..."
 while read e; do
   if [ ! -z "$e" ]; then
-    igno_indb+=("$tmp2")
+    igno_indb+=("$e")
   fi
 done <"$db_folder/$igno_db"
 
