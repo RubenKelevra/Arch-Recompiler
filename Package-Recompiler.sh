@@ -206,7 +206,7 @@ tmp2=""
 echo "  Depency-packages..."
 oldifs="$IFS"
 IFS=$'\n'
-for e in ´yaourt -Qdn´; do
+for e in `yaourt -Qdn`; do
   tmp1=$(echo $e | cut -d' ' -f1)
   tmp2=$(echo $e | cut -d' ' -f2)
   if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
@@ -222,7 +222,7 @@ done
 tmp1=""
 tmp2=""
 echo "  Explicit-packages..."
-for e in ´yaourt -Qen´; do
+for e in `yaourt -Qen`; do
   tmp1=$(echo $e | cut -d' ' -f1)
   tmp2=$(echo $e | cut -d' ' -f2)
   if [ ! -z "$tmp1" -a ! -z "$tmp2" ]; then
