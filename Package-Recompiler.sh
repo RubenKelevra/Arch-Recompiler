@@ -79,7 +79,7 @@ if test $? -ne 0; then
   fix_filerights=1
 fi
 
-if [ $fix_filerights ]; then
+if [ "$fix_filerights" -eq "1" ]; then
   echo "insufficient file-rights, try to fix this with sudo..."
   sudo chown $(whoami): -R "$db_folder"
   if test $? -ne 0; then
@@ -96,23 +96,23 @@ if [ $fix_filerights ]; then
 fi
 unset fix_filerights
 
-if [ $create_deps_db -o $create_expl_db -o $create_igno_db ]; then
+if [ "$create_deps_db" -eq "1" -o "$create_expl_db" -eq "1" -o "$create_igno_db" -eq "1" ]; then
   echo "Creating databases ..."
-  if [ $create_deps_db ]; then
+  if [ "$create_deps_db" -eq "1" ]; then
     echo "  Depency-packages database..."
     echo "" > "$db_folder/$deps_db" 2>&1
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
   fi
-  if [ $create_expl_db ]; then
+  if [ "$create_expl_db" -eq "1" ]; then
     echo "  Explicit-packages database..."
     echo "" > "$db_folder/$expl_db" 2>&1
     if test $? -ne 0; then
       echo "failed.";exit 1
     fi
   fi
-  if [ $create_igno_db ]; then
+  if [ "$create_igno_db" -eq "1" ]; then
     echo "  Ignore-packages list..."
     echo "$default_igno_list" > "$db_folder/$igno_db" 2>&1
     if test $? -ne 0; then
